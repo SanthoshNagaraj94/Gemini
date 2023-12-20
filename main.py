@@ -34,7 +34,7 @@ elif Side_option=="Image Q&A":
         st.markdown(response.text)
         # save the image, prompt input and response to upload into mongoDB
         Image=open("image.jpeg","rb").read()
-        coll.insert_one({"Date":datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"SystemName":os.getlogin(),"image":base64.b64encode(Image),"prompt":Prompt,"response":response.text})
+        coll.insert_one({"Date":datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"image":base64.b64encode(Image),"prompt":Prompt,"response":response.text})
 
         os.remove("image.jpeg")
 
@@ -55,6 +55,6 @@ elif Side_option=="Image Description":
         
         st.markdown(response.text)
         Image=open("image.jpeg","rb").read()
-        coll.insert_one({"Date":datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"SystemName":os.getlogin(),"image":base64.b64encode(Image),"prompt":Prompt,"response":response.text})
+        coll.insert_one({"Date":datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"image":base64.b64encode(Image),"prompt":Prompt,"response":response.text})
         
         os.remove("image.jpeg")
