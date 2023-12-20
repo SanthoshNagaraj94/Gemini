@@ -1,7 +1,13 @@
 import streamlit as st
 from Fun import *
 import os
+from pymongo import MongoClient
+import base64
+import re
 
+client=MongoClient("mongodb+srv://santhosh:sam123@cluster0.mvgwd.mongodb.net/?retryWrites=true&w=majority")
+db=client['Guvi']
+coll=db['Gemini-Vision']
 Side_option=st.sidebar.selectbox("Choose your option",("Home","Image Q&A","Image Description"))
 
 st.sidebar.markdown("""## Welcome Gemini-Vision to Guvi-AI""")
@@ -20,10 +26,16 @@ elif Side_option=="Image Q&A":
     except:
         pass
     Prompt=st.text_input("Ask your Question From Image")
+   
     if st.button("submit"):
         response=Image_Predictiion(Image,Prompt)
         st.markdown(response.text)
+        # save the image, prompt input and response to upload into mongoDB
+        Image=open("image.jpeg","rb").read()
+        coll.insert_one({"image":base64.b64encode(Image),"prompt":Prompt,"response":response.text})
+
         os.remove("image.jpeg")
+
     
 elif Side_option=="Image Description":
     st.title("Image Description")
@@ -33,10 +45,14 @@ elif Side_option=="Image Description":
     except:
         pass
     Prompt="Describe the Image and its Background Image with 8 bullet points"
+    # validate Email
+
     if st.button("Describe the Image"):
         response=Image_Predictiion(Image,Prompt)
     
         
         st.markdown(response.text)
+        Image=open("image.jpeg","rb").read()
+        coll.insert_one({"image":base64.b64encode(Image),"prompt":Prompt,"response":response.text})
         
         os.remove("image.jpeg")
